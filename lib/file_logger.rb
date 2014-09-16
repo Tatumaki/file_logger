@@ -3,13 +3,15 @@ require "file_logger/version"
 class FileLogger
   attr_accessor :interval, :stdout_limit, :strict_mode
 
-  def initialize(path="./STDOUT.log")
+  def initialize(path="./STDOUT.log", autoclose: true)
     @counter = 0
     @interval = 1000
     @mode = "a"
     @stdout_limit = -1
     @strict_mode = false
     self.open(path)
+
+    ObjectSpace.define_finalizer(self, proc{ close }) if autoclose
     puts "---- #{Time.now} ----\n"
   end
 
